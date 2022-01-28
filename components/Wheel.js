@@ -16,6 +16,8 @@ import {
     Image,
     Checkbox,
     CheckboxGroup,
+    Radio,
+    RadioGroup,
     Drawer,
     DrawerBody,
     DrawerCloseButton,
@@ -43,7 +45,21 @@ const filtering = (array, filters) => {
         if (i.team === 'Commercial' && true === filters.commercial) return true
         return false
     })
-    return data
+    if (filters.show === 'all') return data
+    else if (filters.show === 'leaders') {
+        console.log('leader run', filters.show)
+        const leaders = data.filter(i => {
+            if (i.leader === true ) return true
+        })
+        return leaders
+    }
+    else if (filters.show === 'team') {
+        console.log('team run', filters.show)
+        const team = data.filter(i => {
+            if (i.leader === undefined || i.leader === null || i.leader === false ) return true
+        })
+        return team
+    }
 }
 
 var storedData = []
@@ -277,6 +293,14 @@ export default function Wheel() {
         })
     }
 
+    const setValue = (e) => {
+        console.log(e.target.value)
+        setFilters({
+            ...filters,
+            show: e.target.value
+        })
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
 
@@ -421,6 +445,7 @@ export default function Wheel() {
             </main>
             <Drawer
                 isOpen={isOpen}
+                size={'md'}
                 placement='right'
                 onClose={onClose}
                 finalFocusRef={btnRef}
@@ -439,6 +464,14 @@ export default function Wheel() {
                             <Checkbox value='rcg' isChecked={filters.rcg} onChange={handleRCG}>Retail &amp; Consumer Goods</Checkbox>
                             <Checkbox value='manufacturing' isChecked={filters.manufacturing} onChange={handleManufacturing}>Manufacturing</Checkbox>
                             <Checkbox value='specialists' isChecked={filters.specialists} onChange={handleSpecialists}>Architects &amp; Specialists</Checkbox>
+                            <RadioGroup defaultValue={filters.show}>
+                                <Text>Include:</Text>
+                                <Stack spacing={4} direction='row' value={filters.show} onChange={setValue} >
+                                    <Radio value='all'>Everyone</Radio>
+                                    <Radio value='leaders'>Only Leaders</Radio>
+                                    <Radio value='team'>Only Team</Radio>
+                                </Stack>
+                                </RadioGroup>
                         </Stack>
                         {/* </CheckboxGroup> */}
                     </DrawerBody>

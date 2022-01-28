@@ -12,6 +12,7 @@ import {
     Text,
     IconButton,
     Button,
+    ButtonGroup,
     Image,
     Checkbox,
     CheckboxGroup,
@@ -23,8 +24,9 @@ import {
     DrawerContent,
     DrawerFooter,
     useColorModeValue,
-    useDisclosure } from "@chakra-ui/react";
-import { ViewIcon } from "@chakra-ui/icons";
+    useDisclosure,
+    useColorMode } from "@chakra-ui/react";
+import { ViewIcon, MoonIcon } from "@chakra-ui/icons";
 import { collection, getDocs } from "firebase/firestore";
 import styles from "../styles/Wheel.module.css"
 import { app, db } from "../firebase/firebase";
@@ -41,23 +43,23 @@ const filtering = (array, filters) => {
         if (i.team === 'Commercial' && true === filters.commercial) return true
         return false
     })
-    console.log(data)
     return data
 }
 
+var storedData = []
+
 async function drawChart(svgRef, filters) {
     var data = []
-    var people = []
-    if (people === undefined || people.length == 0 ) {
+    if (storedData === undefined || storedData.length == 0 ) {
         const querySnapshot = await getDocs(collection(db, "leaders"))
+        console.log('DB Run', querySnapshot)
         querySnapshot.forEach((doc) => {
-            people.push(doc.data())
-            console.log(JSON.stringify(doc.data()))
+            storedData.push(doc.data())
         })  
     }
     
 
-    data = filtering(people, filters)
+    data = filtering(storedData, filters)
 
     d3.select("#piechart").remove()
 
@@ -161,7 +163,6 @@ async function drawChart(svgRef, filters) {
 		
 	arcs.append("path")
 		.attr("fill", function(d, i){ 
-            console.log(d, i)
             return color(i); 
         })
 		.attr("d", function (d) { return arc(d); });
@@ -222,6 +223,7 @@ const Blob = (props) => {
 }
 
 export default function Wheel() {
+    const { colorMode, toggleColorMode } = useColorMode()
     const [filters, setFilters] = React.useState({
         national: true,
         smb: true,
@@ -230,6 +232,7 @@ export default function Wheel() {
         rcg: true,
         manufacturing: true,
         specialists: true,
+        show: 'all'
     })
     const handleNational = () => {
         setFilters({
@@ -287,21 +290,31 @@ export default function Wheel() {
             <main >
                 <Flex
                     zIndex={100}
-                    bgGradient="linear(to-r, blue.50,purple.50)"
+                    bgGradient={useColorModeValue("linear(to-r, blue.50,purple.50)", "linear(to-r, blue.800,purple.900)")}
                     >
-                        
-                    <IconButton
+                    <ButtonGroup
                         position={'fixed'}
                         top={'100px'}
-                        right={'45px'}
-                        colorScheme='blue'
-                        aria-label='Search database'
-                        size='sm'
-                        icon={<ViewIcon />}
-                        ref={btnRef}
-                        onClick={onOpen}
-                    />
-
+                        right={'45px'}>
+                        <IconButton
+                            // position={'fixed'}
+                            // top={'100px'}
+                            // right={'45px'}
+                            colorScheme='blue'
+                            aria-label='Search database'
+                            size='sm'
+                            icon={<ViewIcon />}
+                            ref={btnRef}
+                            onClick={onOpen}
+                        />
+                        <IconButton
+                            colorScheme='red'
+                            aria-label='Search database'
+                            size='sm'
+                            icon={<MoonIcon />}
+                            onClick={toggleColorMode}
+                        />
+                    </ButtonGroup>
                         
                     <Container
                         mb={'6'}
@@ -311,8 +324,8 @@ export default function Wheel() {
                                 <Heading
                                     fontSize={'6xl'}
                                     lineHeight={'1.6'}
-                                    bgGradient="linear(to-r, red.400,pink.400)"
-                                    bgClip="text">Wheel of Gratitude</Heading>
+                                    bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
+                                    bgClip="text">{useColorModeValue("Wheel of Gratitude", "Wheel of Attitude")}</Heading>
                             </Box>
                         </Center>
                         <Stack
@@ -350,7 +363,7 @@ export default function Wheel() {
                                     position={'absolute'}
                                     left={0}
                                     zIndex={10}
-                                    color={useColorModeValue('blue.200', 'teal.400')}
+                                    color={useColorModeValue('blue.200', 'orange.400')}
                                 />
                                 <Center zIndex={50} py={6}>
                                     <Box

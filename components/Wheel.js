@@ -27,7 +27,8 @@ import {
     DrawerFooter,
     useColorModeValue,
     useDisclosure,
-    useColorMode } from "@chakra-ui/react";
+    useColorMode,
+    useMediaQuery } from "@chakra-ui/react";
 import { ViewIcon, MoonIcon } from "@chakra-ui/icons";
 import { collection, getDocs } from "firebase/firestore";
 import styles from "../styles/Wheel.module.css"
@@ -64,7 +65,7 @@ const filtering = (array, filters) => {
 
 var storedData = []
 
-async function drawChart(svgRef, filters) {
+async function drawChart(svgRef, filters, mode) {
     var data = []
     if (storedData === undefined || storedData.length == 0 ) {
         const querySnapshot = await getDocs(collection(db, "leaders"))
@@ -79,9 +80,10 @@ async function drawChart(svgRef, filters) {
 
     d3.select("#piechart").remove()
 
-	var padding = {top:0, right:0, bottom:0, left:0},
-		w = 500 - padding.left - padding.right,
-		h = 500 - padding.top  - padding.bottom,
+    const mobilePadding = mode < 450 ? 10 : 0
+	var padding = {top:0, right: mobilePadding, bottom:0, left: mobilePadding},
+		w = mode - padding.left - padding.right,
+		h = mode - padding.top  - padding.bottom,
 		r = Math.min(w, h)/2,
 		rotation = 0,
 		oldrotation = 0,
@@ -303,11 +305,13 @@ export default function Wheel() {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
+    let [isSmallerThan520] = useMediaQuery('(max-width: 520px)')
+    let mode =  isSmallerThan520 ? 410 : 500
 
 	const svg = React.useRef(null);
 	React.useEffect(() => {
-		drawChart(svg, filters);
-	  }, [svg, filters])
+		drawChart(svg, filters, mode);
+	  }, [svg, filters, mode])
 
     return (
         <div>
@@ -346,8 +350,12 @@ export default function Wheel() {
                         <Center>
                             <Box mt={'4'}>
                                 <Heading
-                                    fontSize={'6xl'}
-                                    lineHeight={'1.6'}
+                                    fontSize={"6xl"}
+                                    // fontSize={useColorModeValue("6xl","7xl")}
+                                    // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
+                                    // letterSpacing={useColorModeValue("inherit","wider")}
+                                    // lineHeight={useColorModeValue("1.6","1")}
+                                    lineHeight={"1.6"}
                                     bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
                                     bgClip="text">{useColorModeValue("Wheel of Gratitude", "Wheel of Attitude")}</Heading>
                             </Box>
@@ -360,7 +368,7 @@ export default function Wheel() {
                         >
                             <Flex>
                                 <div className={styles.chart} id="chart">
-                                    <svg className="svg-canvas" width='500' height='500' ref={svg}/>
+                                    <svg className="svg-canvas" width={mode} height={mode} ref={svg}/>
                                 </div>
                             </Flex>
                             <Flex
@@ -370,8 +378,13 @@ export default function Wheel() {
                                 align={'center'}
                                 position={'relative'}
                                 w={'full'}>
-                                <Heading fontSize={'5xl'} fontWeight={500}>
-                                                        Spin the Wheel!
+                                <Heading
+                                    fontSize={"5xl"}
+                                    // fontSize={useColorModeValue("5xl","6xl")}
+                                    // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
+                                    // lineHeight={useColorModeValue("1.6","1")}
+                                    fontWeight={500}>
+                                                        Click on the Wheel to Spin!
                                                     </Heading>
                             </Flex>
                             <Flex

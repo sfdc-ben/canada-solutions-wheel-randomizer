@@ -486,7 +486,6 @@ export default function Wheel() {
                                 </Stack>
                                 </RadioGroup>
                         </Stack>
-                        <div>{process.env.NEXT_PUBLIC_PROJECTID}</div>
                         {/* </CheckboxGroup> */}
                     </DrawerBody>
 

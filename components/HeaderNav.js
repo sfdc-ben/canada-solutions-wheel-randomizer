@@ -76,7 +76,7 @@ export default function HeaderNav() {
 			<Flex
 				bg={useColorModeValue('white', 'gray.800')}
 				color={useColorModeValue('gray.600', 'white')}
-				minH={'10vh'}
+				minH={'70px'}
 				position={'fixed'}
 				width={'100vw'}
 				top={0}

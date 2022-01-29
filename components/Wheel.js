@@ -320,10 +320,12 @@ export default function Wheel() {
                     zIndex={100}
                     bgGradient={useColorModeValue("linear(to-r, blue.50,purple.50)", "linear(to-r, blue.800,purple.900)")}
                     >
-                    <ButtonGroup
+                    { !isSmallerThan520 && (
+                        <ButtonGroup
                         position={'fixed'}
                         top={'100px'}
-                        right={'45px'}>
+                        right={'45px'}
+                        >
                         <IconButton
                             // position={'fixed'}
                             // top={'100px'}
@@ -343,6 +345,7 @@ export default function Wheel() {
                             onClick={toggleColorMode}
                         />
                     </ButtonGroup>
+                    )}
                         
                     <Container
                         mb={'6'}
@@ -355,7 +358,8 @@ export default function Wheel() {
                                     // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
                                     // letterSpacing={useColorModeValue("inherit","wider")}
                                     // lineHeight={useColorModeValue("1.6","1")}
-                                    lineHeight={"1.6"}
+                                    lineHeight={{ base: '1.4', md: '1.6' }}
+                                    textAlign={'center'}
                                     bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
                                     bgClip="text">{useColorModeValue("Wheel of Gratitude", "Wheel of Attitude")}</Heading>
                             </Box>
@@ -380,6 +384,7 @@ export default function Wheel() {
                                 w={'full'}>
                                 <Heading
                                     fontSize={"5xl"}
+                                    textAlign={'center'}
                                     // fontSize={useColorModeValue("5xl","6xl")}
                                     // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
                                     // lineHeight={useColorModeValue("1.6","1")}
@@ -453,6 +458,29 @@ export default function Wheel() {
                                 </Center>
                             </Flex>
                         </Stack>
+                        { isSmallerThan520 && (
+                        <ButtonGroup
+                        >
+                        <IconButton
+                            // position={'fixed'}
+                            // top={'100px'}
+                            // right={'45px'}
+                            colorScheme='blue'
+                            aria-label='Search database'
+                            size='sm'
+                            icon={<ViewIcon />}
+                            ref={btnRef}
+                            onClick={onOpen}
+                        />
+                        <IconButton
+                            colorScheme='red'
+                            aria-label='Search database'
+                            size='sm'
+                            icon={<MoonIcon />}
+                            onClick={toggleColorMode}
+                        />
+                    </ButtonGroup>
+                    )}
                     </Container>
                 </Flex>
             </main>

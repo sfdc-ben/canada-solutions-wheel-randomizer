@@ -65,7 +65,7 @@ const filtering = (array, filters) => {
 
 var storedData = []
 
-async function drawChart(svgRef, filters, mode) {
+async function drawChart(svgRef, filters, phone) {
     var data = []
     if (storedData === undefined || storedData.length == 0 ) {
         const querySnapshot = await getDocs(collection(db, "leaders"))
@@ -79,11 +79,12 @@ async function drawChart(svgRef, filters, mode) {
     data = filtering(storedData, filters)
 
     d3.select("#piechart").remove()
-
-    const mobilePadding = mode < 450 ? 10 : 0
+    console.log('pre-chart', phone)
+    const mobilePadding = phone === true ? 10 : 20
+    const dim = phone === true ? 410 : 530
 	var padding = {top:0, right: mobilePadding, bottom:0, left: mobilePadding},
-		w = mode - padding.left - padding.right,
-		h = mode - padding.top  - padding.bottom,
+		w = dim - padding.left - padding.right,
+		h = dim - padding.top  - padding.bottom,
 		r = Math.min(w, h)/2,
 		rotation = 0,
 		oldrotation = 0,
@@ -193,7 +194,7 @@ async function drawChart(svgRef, filters, mode) {
 			return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius -20) +",3 )";
 		})
 		.attr("text-anchor", "end")
-		.style({"font-size":"x-small"})
+		.style({"font-size": phone === true ? "xx-small" : "x-small" })
 		.text( function(d, i) {
 			return data[i].name;
 		});
@@ -252,6 +253,16 @@ export default function Wheel() {
         specialists: true,
         show: 'all'
     })
+    const [phone, setPhone] = React.useState(false)
+
+    React.useEffect(() => {
+        if (window.innerWidth < 520) {
+            console.log(true, window.innerWidth)
+            setPhone(true)
+        }
+        console.log(phone)
+    }, [])
+
     const handleNational = () => {
         setFilters({
             ...filters,
@@ -302,16 +313,15 @@ export default function Wheel() {
             show: e.target.value
         })
     }
+ 
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = React.useRef()
-    let [isSmallerThan520] = useMediaQuery('(max-width: 520px)')
-    let mode =  isSmallerThan520 ? 410 : 500
 
 	const svg = React.useRef(null);
 	React.useEffect(() => {
-		drawChart(svg, filters, mode);
-	  }, [svg, filters, mode])
+		drawChart(svg, filters, phone);
+	  }, [svg, filters, phone])
 
     return (
         <div>
@@ -320,32 +330,35 @@ export default function Wheel() {
                     zIndex={100}
                     bgGradient={useColorModeValue("linear(to-r, blue.50,purple.50)", "linear(to-r, blue.800,purple.900)")}
                     >
-                    { !isSmallerThan520 && (
+                    {/* { !isSmallerThan520 && ( */}
                         <ButtonGroup
                         position={'fixed'}
                         top={'100px'}
-                        right={'45px'}
+                        right={['15px','45px']}
                         >
-                        <IconButton
-                            // position={'fixed'}
-                            // top={'100px'}
-                            // right={'45px'}
-                            colorScheme='blue'
-                            aria-label='Search database'
-                            size='sm'
-                            icon={<ViewIcon />}
-                            ref={btnRef}
-                            onClick={onOpen}
-                        />
-                        <IconButton
-                            colorScheme='red'
-                            aria-label='Search database'
-                            size='sm'
-                            icon={<MoonIcon />}
-                            onClick={toggleColorMode}
-                        />
+                        <Stack direction={['column', 'row']}>
+                            <IconButton
+                                // position={'fixed'}
+                                // top={'100px'}
+                                // right={'45px'}
+                                colorScheme='blue'
+                                aria-label='Search database'
+                                size='sm'
+                                icon={<ViewIcon />}
+                                ref={btnRef}
+                                onClick={onOpen}
+                            />
+                            <IconButton
+                                colorScheme='red'
+                                aria-label='Search database'
+                                size='sm'
+                                icon={<MoonIcon />}
+                                onClick={toggleColorMode}
+                            />
+                        </Stack>
+                        
                     </ButtonGroup>
-                    )}
+                    {/* )} */}
                         
                     <Container
                         mb={'6'}
@@ -372,7 +385,7 @@ export default function Wheel() {
                         >
                             <Flex>
                                 <div className={styles.chart} id="chart">
-                                    <svg className="svg-canvas" width={mode} height={mode} ref={svg}/>
+                                    <svg className="svg-canvas" width={phone === true ? 410 : 530} height={phone === true ? 410 : 530} ref={svg}/>
                                 </div>
                             </Flex>
                             <Flex
@@ -457,30 +470,37 @@ export default function Wheel() {
                                     </Box>
                                 </Center>
                             </Flex>
+                            {/* { isSmallerThan520 && (
+                                <Flex
+                                    flex={1}
+                                    justify={'center'}
+                                    align={'center'}
+                                    position={'relative'}
+                                    w={'full'}>
+                                
+                                    <ButtonGroup>
+                                        <IconButton
+                                            // position={'fixed'}
+                                            // top={'100px'}
+                                            // right={'45px'}
+                                            colorScheme='blue'
+                                            aria-label='Search database'
+                                            size='sm'
+                                            icon={<ViewIcon />}
+                                            ref={btnRef}
+                                            onClick={onOpen}
+                                        />
+                                        <IconButton
+                                            colorScheme='red'
+                                            aria-label='Search database'
+                                            size='sm'
+                                            icon={<MoonIcon />}
+                                            onClick={toggleColorMode}
+                                        />
+                                    </ButtonGroup>
+                                </Flex>
+                            )} */}
                         </Stack>
-                        { isSmallerThan520 && (
-                        <ButtonGroup
-                        >
-                        <IconButton
-                            // position={'fixed'}
-                            // top={'100px'}
-                            // right={'45px'}
-                            colorScheme='blue'
-                            aria-label='Search database'
-                            size='sm'
-                            icon={<ViewIcon />}
-                            ref={btnRef}
-                            onClick={onOpen}
-                        />
-                        <IconButton
-                            colorScheme='red'
-                            aria-label='Search database'
-                            size='sm'
-                            icon={<MoonIcon />}
-                            onClick={toggleColorMode}
-                        />
-                    </ButtonGroup>
-                    )}
                     </Container>
                 </Flex>
             </main>

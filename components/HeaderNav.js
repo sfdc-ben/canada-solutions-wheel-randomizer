@@ -113,7 +113,7 @@ export default function HeaderNav() {
 					justify={'flex-end'}
 					direction={'row'}
 					spacing={6}>
-					<NextLink href='' passHref>
+					<NextLink href='#' passHref>
 						<Button
 							as={'a'}
 							fontSize={'sm'}
@@ -149,7 +149,7 @@ const DesktopNav = () => {
 						<PopoverTrigger>
 							<Link
 								p={2}
-								href={navItem.href ?? 'javascript:;'}
+								href={navItem.href ?? '#'}
 								fontSize={'lg'}
 								fontWeight={900}
 								color={linkColor}
@@ -242,7 +242,7 @@ const MobileNavItem = ({ label, children, href }) => {
 			<Flex
 				py={2}
 				as={Link}
-				href={href ?? 'javascript:;'}
+				href={href ?? '#'}
 				justify={'space-between'}
 				align={'center'}
 				_hover={{

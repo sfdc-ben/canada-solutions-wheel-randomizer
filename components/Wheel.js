@@ -63,25 +63,27 @@ const filtering = (array, filters) => {
     }
 }
 
-var storedData = []
+let storedData = []
 
 async function drawChart(svgRef, filters, phone) {
+    
     var data = []
     if (storedData === undefined || storedData.length == 0 ) {
         const querySnapshot = await getDocs(collection(db, "leaders"))
+        let temp = []
         console.log('DB Run', querySnapshot)
         querySnapshot.forEach((doc) => {
-            storedData.push(doc.data())
-        })  
+            temp.push(doc.data())
+        })
+        storedData = temp  
     }
     
-
     data = filtering(storedData, filters)
 
     d3.select("#piechart").remove()
     console.log('pre-chart', phone)
-    const mobilePadding = phone === true ? 10 : 20
-    const dim = phone === true ? 410 : 530
+    const mobilePadding = phone === true ? 10 : 0
+    const dim = phone === true ? 410 : 500
 	var padding = {top:0, right: mobilePadding, bottom:0, left: mobilePadding},
 		w = dim - padding.left - padding.right,
 		h = dim - padding.top  - padding.bottom,
@@ -261,7 +263,7 @@ export default function Wheel() {
             setPhone(true)
         }
         console.log(phone)
-    }, [])
+    }, [phone])
 
     const handleNational = () => {
         setFilters({
@@ -385,7 +387,7 @@ export default function Wheel() {
                         >
                             <Flex>
                                 <div className={styles.chart} id="chart">
-                                    <svg className="svg-canvas" width={phone === true ? 410 : 530} height={phone === true ? 410 : 530} ref={svg}/>
+                                    <svg className="svg-canvas" width={phone === true ? 410 : 500} height={phone === true ? 410 : 500} ref={svg}/>
                                 </div>
                             </Flex>
                             <Flex
@@ -444,7 +446,7 @@ export default function Wheel() {
                                                 w={'120px'}
                                                 border={'2px solid white'}
                                                 borderRadius={'full'}
-                                                src
+                                                // src
                                             />
                                         </Flex>
 

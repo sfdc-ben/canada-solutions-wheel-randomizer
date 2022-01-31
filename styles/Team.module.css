@@ -1,0 +1,12 @@
+table {
+    /* Make sure the inner table is always as wide as needed */
+    width: 100%;
+}
+
+td {
+    width: 1%;
+      /* But "collapsed" cells should be as small as possible */
+      &.collapse {
+        width: 0.0000000001%;
+      }
+}

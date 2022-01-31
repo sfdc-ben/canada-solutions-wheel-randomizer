@@ -28,12 +28,17 @@ import {
     useColorModeValue,
     useDisclosure,
     useColorMode,
-    useMediaQuery } from "@chakra-ui/react";
-import { ViewIcon, MoonIcon } from "@chakra-ui/icons";
-import { collection, getDocs } from "firebase/firestore";
+    useMediaQuery, 
+    LinkOverlay,
+    Grid,
+    GridItem,
+    FormLabel,
+    Input} from "@chakra-ui/react";
+import { ViewIcon, MoonIcon, EditIcon } from "@chakra-ui/icons";
+    import { collection, getDocs } from "firebase/firestore";
+import Link from "next/link"
 import styles from "../styles/Wheel.module.css"
 import { app, db } from "../firebase/firebase";
-import { filter } from "d3";
 
 const filtering = (array, filters) => {
     const data = array.filter(i => {
@@ -62,6 +67,7 @@ const filtering = (array, filters) => {
         return team
     }
 }
+
 
 let storedData = []
 
@@ -255,15 +261,36 @@ export default function Wheel() {
         specialists: true,
         show: 'all'
     })
+    const [title, setTitle] = React.useState('')
     const [phone, setPhone] = React.useState(false)
-
     React.useEffect(() => {
         if (window.innerWidth < 520) {
             console.log(true, window.innerWidth)
             setPhone(true)
         }
         console.log(phone)
+        if (window.localStorage.getItem('filters') !== null ) {
+            console.log('setting filters')
+            setFilters(JSON.parse(window.localStorage.getItem('filters')))
+        }
     }, [phone])
+
+    const saveFilters = () => {
+        window.localStorage.setItem('filters', JSON.stringify(filters))
+    }
+    const resetFilters = () => {
+        setFilters({
+            national: true,
+            smb: true,
+            commercial: true,
+            enterprise: true,
+            rcg: true,
+            manufacturing: true,
+            specialists: true,
+            show: 'all'
+        })
+        window.localStorage.removeItem('filters')
+    }
 
     const handleNational = () => {
         setFilters({
@@ -308,6 +335,10 @@ export default function Wheel() {
         })
     }
 
+    const handleCustomTitle = (e) => {
+        setTitle(e.target.value)
+    }
+
     const setValue = (e) => {
         console.log(e.target.value)
         setFilters({
@@ -330,12 +361,13 @@ export default function Wheel() {
             <main >
                 <Flex
                     zIndex={100}
+                    minH={'80vh'}
                     bgGradient={useColorModeValue("linear(to-r, blue.50,purple.50)", "linear(to-r, blue.800,purple.900)")}
                     >
                     {/* { !isSmallerThan520 && ( */}
                         <ButtonGroup
                         position={'fixed'}
-                        top={'100px'}
+                        top={'13vh'}
                         right={['15px','45px']}
                         >
                         <Stack direction={['column', 'row']}>
@@ -346,6 +378,7 @@ export default function Wheel() {
                                 colorScheme='blue'
                                 aria-label='Search database'
                                 size='sm'
+                                isRound='true'
                                 icon={<ViewIcon />}
                                 ref={btnRef}
                                 onClick={onOpen}
@@ -354,9 +387,23 @@ export default function Wheel() {
                                 colorScheme='red'
                                 aria-label='Search database'
                                 size='sm'
+                                isRound='true'
                                 icon={<MoonIcon />}
                                 onClick={toggleColorMode}
                             />
+                            { !phone && (
+                                <Link href='/edit' passHref>
+                                    <IconButton
+                                        colorScheme='green'
+                                        aria-label='Search database'
+                                        size='sm'
+                                        isRound='true'
+                                        icon={<EditIcon />}
+                                        href='/edit'
+                                    />
+                                </Link>
+                            )}
+                            
                         </Stack>
                         
                     </ButtonGroup>
@@ -367,7 +414,7 @@ export default function Wheel() {
                         maxW={'7xl'}>
                         <Center>
                             <Box mt={'4'}>
-                                <Heading
+                                {!title && <Heading
                                     fontSize={"6xl"}
                                     // fontSize={useColorModeValue("6xl","7xl")}
                                     // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
@@ -376,7 +423,20 @@ export default function Wheel() {
                                     lineHeight={{ base: '1.4', md: '1.6' }}
                                     textAlign={'center'}
                                     bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
-                                    bgClip="text">{useColorModeValue("Wheel of Gratitude", "Wheel of Attitude")}</Heading>
+                                    bgClip="text">{useColorModeValue("Wheel of Gratitude", "Wheel of Attitude")}
+                                </Heading>}
+                                {title && <Heading
+                                    fontSize={"6xl"}
+                                    // fontSize={useColorModeValue("6xl","7xl")}
+                                    // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
+                                    // letterSpacing={useColorModeValue("inherit","wider")}
+                                    // lineHeight={useColorModeValue("1.6","1")}
+                                    lineHeight={{ base: '1.4', md: '1.6' }}
+                                    textAlign={'center'}
+                                    bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
+                                    bgClip="text">{title}
+                                </Heading>}
+                                
                             </Box>
                         </Center>
                         <Stack
@@ -400,12 +460,9 @@ export default function Wheel() {
                                 <Heading
                                     fontSize={"5xl"}
                                     textAlign={'center'}
-                                    // fontSize={useColorModeValue("5xl","6xl")}
-                                    // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
-                                    // lineHeight={useColorModeValue("1.6","1")}
                                     fontWeight={500}>
-                                                        Click on the Wheel to Spin!
-                                                    </Heading>
+                                    Click on the Wheel to Spin!
+                                </Heading>
                             </Flex>
                             <Flex
                                 id="highlight" hidden 
@@ -472,36 +529,7 @@ export default function Wheel() {
                                     </Box>
                                 </Center>
                             </Flex>
-                            {/* { isSmallerThan520 && (
-                                <Flex
-                                    flex={1}
-                                    justify={'center'}
-                                    align={'center'}
-                                    position={'relative'}
-                                    w={'full'}>
-                                
-                                    <ButtonGroup>
-                                        <IconButton
-                                            // position={'fixed'}
-                                            // top={'100px'}
-                                            // right={'45px'}
-                                            colorScheme='blue'
-                                            aria-label='Search database'
-                                            size='sm'
-                                            icon={<ViewIcon />}
-                                            ref={btnRef}
-                                            onClick={onOpen}
-                                        />
-                                        <IconButton
-                                            colorScheme='red'
-                                            aria-label='Search database'
-                                            size='sm'
-                                            icon={<MoonIcon />}
-                                            onClick={toggleColorMode}
-                                        />
-                                    </ButtonGroup>
-                                </Flex>
-                            )} */}
+                            
                         </Stack>
                     </Container>
                 </Flex>
@@ -518,7 +546,6 @@ export default function Wheel() {
                     <DrawerCloseButton />
                     <DrawerHeader pt={24}>Select Teams To Include</DrawerHeader>
                     <DrawerBody>
-                    {/* <CheckboxGroup colorScheme='green' defaultValue={['national', 'smb', 'commercial', 'enterprise', 'rcg', 'manufacturing', 'specialists']}> */}
                         <Stack spacing={[1, 5]} direction={['column', 'column']}>
                             <Checkbox value='national' isChecked={filters.national} onChange={handleNational}>National</Checkbox>
                             <Checkbox value='smb' isChecked={filters.smb} onChange={handleSMB}>Small &amp; Medium Business</Checkbox>
@@ -534,14 +561,28 @@ export default function Wheel() {
                                     <Radio value='leaders'>Only Leaders</Radio>
                                     <Radio value='team'>Only Team</Radio>
                                 </Stack>
-                                </RadioGroup>
+                            </RadioGroup>
+                            { !phone && (
+                            <Grid mt={2} alignItems={'end'} templateColumns='repeat(16, 1fr)' gap={6}>
+                                <GridItem colSpan={[6, 5]}>
+                                    <FormLabel htmlFor="title">Custom Title</FormLabel>
+                                </GridItem>
+                                <GridItem colStart={[7, 6]} colEnd={17}>
+                                    <Input value={title} id="title" placeholder='Custom Title' onChange={handleCustomTitle}/>
+                                </GridItem>
+                            </Grid>
+                            )}
                         </Stack>
-                        {/* </CheckboxGroup> */}
                     </DrawerBody>
-
                     <DrawerFooter>
                         <Button variant='outline' mr={3} onClick={onClose}>
                             Close
+                        </Button>
+                        <Button variant='outline' mr={3} colorScheme='green' onClick={saveFilters}>
+                            Save Filters
+                        </Button>
+                        <Button variant='outline' colorScheme='red' onClick={resetFilters}>
+                            Reset Filters
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>

@@ -414,7 +414,18 @@ export default function Wheel() {
                         maxW={'7xl'}>
                         <Center>
                             <Box mt={'4'}>
-                                {!title && <Heading
+                                <Heading
+                                    fontSize={"6xl"}
+                                    // fontSize={useColorModeValue("6xl","7xl")}
+                                    // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
+                                    // letterSpacing={useColorModeValue("inherit","wider")}
+                                    // lineHeight={useColorModeValue("1.6","1")}
+                                    lineHeight={{ base: '1.4', md: '1.6' }}
+                                    textAlign={'center'}
+                                    bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
+                                    bgClip="text">{useColorModeValue(title || "Wheel of Gratitude", title || "Wheel of Attitude")}
+                                </Heading>
+                                {/* {!title && <Heading
                                     fontSize={"6xl"}
                                     // fontSize={useColorModeValue("6xl","7xl")}
                                     // fontFamily={useColorModeValue("Trailhead Bold","Road Rage")}
@@ -435,7 +446,7 @@ export default function Wheel() {
                                     textAlign={'center'}
                                     bgGradient={useColorModeValue("linear(to-r, red.400,pink.400)", "linear(to-r, orange.300,red.400)")}
                                     bgClip="text">{title}
-                                </Heading>}
+                                </Heading>} */}
                                 
                             </Box>
                         </Center>

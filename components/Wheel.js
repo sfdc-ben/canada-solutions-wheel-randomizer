@@ -49,6 +49,7 @@ const filtering = (array, filters) => {
         if (i.team === 'Manufacturing' && true === filters.manufacturing) return true
         if (i.team === 'Small & Medium Business' && true === filters.smb) return true
         if (i.team === 'Commercial' && true === filters.commercial) return true
+        if (i.team === 'BVS' && true === filters.bvs) return true
         return false
     })
     if (filters.show === 'all') return data
@@ -259,6 +260,7 @@ export default function Wheel() {
         rcg: true,
         manufacturing: true,
         specialists: true,
+        bvs: true,
         show: 'all'
     })
     const [title, setTitle] = React.useState('')
@@ -287,6 +289,7 @@ export default function Wheel() {
             rcg: true,
             manufacturing: true,
             specialists: true,
+            bvs: true,
             show: 'all'
         })
         window.localStorage.removeItem('filters')
@@ -332,6 +335,13 @@ export default function Wheel() {
         setFilters({
             ...filters,
             specialists: !filters.specialists
+        })
+    }
+
+    const handleBVS = () => {
+        setFilters({
+            ...filters,
+            bvs: !filters.bvs
         })
     }
 
@@ -565,6 +575,7 @@ export default function Wheel() {
                             <Checkbox value='rcg' isChecked={filters.rcg} onChange={handleRCG}>Retail &amp; Consumer Goods</Checkbox>
                             <Checkbox value='manufacturing' isChecked={filters.manufacturing} onChange={handleManufacturing}>Manufacturing</Checkbox>
                             <Checkbox value='specialists' isChecked={filters.specialists} onChange={handleSpecialists}>Architects &amp; Specialists</Checkbox>
+                            <Checkbox value='bvs' isChecked={filters.bvs} onChange={handleBVS}>Business Value Services</Checkbox>
                             <RadioGroup defaultValue={filters.show}>
                                 <Text>Include:</Text>
                                 <Stack spacing={4} direction='row' value={filters.show} onChange={setValue} >

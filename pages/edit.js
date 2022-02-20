@@ -30,15 +30,15 @@ export default function Home() {
                         right={['15px','45px']}
                         >
                         <Stack direction={['column', 'row']}>
-                            <IconButton
+                            {/* <IconButton
                                 colorScheme='red'
                                 aria-label='Search database'
                                 size='sm'
                                 isRound='true'
                                 icon={<MoonIcon />}
                                 onClick={toggleColorMode}
-                            />
-                            <Link href='/' passHref>
+                            /> */}
+                            <Link href='/wheel' passHref>
                                 <IconButton
                                     colorScheme='green'
                                     aria-label='Search database'

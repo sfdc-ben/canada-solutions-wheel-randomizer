@@ -16,6 +16,7 @@ export default function Home() {
             <main>
 				<HeaderNav></HeaderNav>
 				<Box position={'relative'} top={'10vh'} height="100%">
+					<Wheel></Wheel>
 					<Footer></Footer>
 				</Box>
             </main>

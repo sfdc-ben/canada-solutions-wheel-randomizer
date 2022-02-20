@@ -13,6 +13,7 @@ import {
 	PopoverContent,
 	useColorModeValue,
 	useDisclosure,
+	useColorMode,
 	Image
 } from '@chakra-ui/react'
 import {
@@ -20,29 +21,30 @@ import {
 	CloseIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
+	MoonIcon,
 } from '@chakra-ui/icons'
 import NextLink from 'next/link'
 
 const NAV_ITEMS = [
 	{
-		label: 'Canada Solutions Summit FY23',
-		// href: '/',
+		label: 'Canada Solutions Hub',
+		href: '/',
 	},
-	// {
-	// 	label: 'Inspiration',
-	// 	children: [
-	// 		{
-	// 			label: 'Explore Design Work',
-	// 			subLabel: 'Trending Design to inspire you',
-	// 			href: '/content-page',
-	// 		},
-	// 		{
-	// 			label: 'New & Noteworthy',
-	// 			subLabel: 'Up-and-coming Designers',
-	// 			href: '#',
-	// 		},
-	// 	],
-	// },
+	{
+		label: 'Team Activities',
+		children: [
+			{
+				label: 'Wheel of Gratitude',
+				subLabel: 'Configurable Wheel Randomizer',
+				href: '/wheel',
+			},
+			{
+				label: 'Jeopardy',
+				subLabel: 'Configurable Trivia Game',
+				href: '/jeopardy',
+			},
+		],
+	},
 	// {
 	// 	label: 'Find Work',
 	// 	children: [
@@ -70,6 +72,7 @@ const NAV_ITEMS = [
 
 export default function HeaderNav() {
     const { isOpen, onToggle } = useDisclosure()
+	const { colorMode, toggleColorMode } = useColorMode()
 
 	return (
 		<Box>
@@ -114,7 +117,15 @@ export default function HeaderNav() {
 					justify={'flex-end'}
 					direction={'row'}
 					spacing={6}>
-					<NextLink href='#' passHref>
+					<IconButton
+							colorScheme='red'
+							aria-label='Search database'
+							size='sm'
+							isRound='true'
+							icon={<MoonIcon />}
+							onClick={toggleColorMode}
+						/>
+					{/* <NextLink href='#' passHref>
 						<Button
 							as={'a'}
 							fontSize={'sm'}
@@ -125,7 +136,7 @@ export default function HeaderNav() {
                             >
 							February 18, 2022
 						</Button>
-					</NextLink>
+					</NextLink> */}
 					
 				</Stack>
 			</Flex>
@@ -151,7 +162,7 @@ const DesktopNav = () => {
 							<Link
 								p={2}
 								href={navItem.href ?? '#'}
-								fontSize={'lg'}
+								// fontSize={'lg'}
 								fontWeight={900}
 								color={linkColor}
 								_hover={{

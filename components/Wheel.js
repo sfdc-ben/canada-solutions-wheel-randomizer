@@ -393,14 +393,14 @@ export default function Wheel() {
                                 ref={btnRef}
                                 onClick={onOpen}
                             />
-                            <IconButton
+                            {/* <IconButton
                                 colorScheme='red'
                                 aria-label='Search database'
                                 size='sm'
                                 isRound='true'
                                 icon={<MoonIcon />}
                                 onClick={toggleColorMode}
-                            />
+                            /> */}
                             { !phone && (
                                 <Link href='/edit' passHref>
                                     <IconButton
@@ -531,7 +531,7 @@ export default function Wheel() {
                                         <Box p={6}>
                                             <Stack spacing={0} align={'center'} mb={5}>
                                                 <div id="name">
-                                                    <Heading fontSize={'3xl'} fontWeight={500}>
+                                                    <Heading textAlign={'center'} fontSize={'3xl'} fontWeight={500}>
                                                         <p></p>
                                                     </Heading>
                                                 </div>

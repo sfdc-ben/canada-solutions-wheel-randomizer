@@ -35,7 +35,7 @@ import {
     FormLabel,
     Input} from "@chakra-ui/react";
 import { ViewIcon, MoonIcon, EditIcon } from "@chakra-ui/icons";
-    import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link"
 import styles from "../styles/Wheel.module.css"
 import { app, db } from "../firebase/firebase";
